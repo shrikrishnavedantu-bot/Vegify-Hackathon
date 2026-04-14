@@ -9,14 +9,13 @@ import Community from './components/Community';
 import Blog from './components/Blog';
 import Contact from './components/Contact';
 import Toast, { ToastType } from './components/Toast';
-import { UserSession, Meal } from './types';
+import { Meal } from './types';
+import { useAuth } from './lib/FirebaseProvider';
+import { auth } from './lib/firebase';
+import { signOut } from 'firebase/auth';
 
 export default function App() {
-  // Auth State
-  const [user, setUser] = useState<UserSession | null>(() => {
-    const saved = localStorage.getItem('vegify_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const { user, loading: authLoading } = useAuth();
 
   // Navigation State
   const [activeView, setActiveView] = useState('home');
@@ -37,11 +36,6 @@ export default function App() {
 
   // Persistence Effects
   useEffect(() => {
-    if (user) localStorage.setItem('vegify_user', JSON.stringify(user));
-    else localStorage.removeItem('vegify_user');
-  }, [user]);
-
-  useEffect(() => {
     localStorage.setItem('vegify_snaps', snaps.toString());
     localStorage.setItem('vegify_converted', converted.toString());
   }, [snaps, converted]);
@@ -58,15 +52,15 @@ export default function App() {
     setToast({ msg, type });
   };
 
-  const handleLogin = (name: string, isGuest: boolean) => {
-    setUser({ name, email: isGuest ? 'guest@vegify.app' : 'user@vegify.app', isGuest });
-  };
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (confirm("Are you sure you want to logout?")) {
-      setUser(null);
-      setActiveView('home');
-      showToast("Logged out successfully.");
+      try {
+        await signOut(auth);
+        setActiveView('home');
+        showToast("Logged out successfully.");
+      } catch (error) {
+        showToast("Logout failed", "error");
+      }
     }
   };
 
@@ -84,10 +78,22 @@ export default function App() {
 
   const calCurrent = meals.reduce((acc, m) => acc + m.calories, 0);
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center purple-gradient">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-4 border-white border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <>
-        <Login onLogin={handleLogin} showToast={showToast} />
+        <Login showToast={showToast} />
         <AnimatePresence>
           {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
         </AnimatePresence>
@@ -96,9 +102,10 @@ export default function App() {
   }
 
   const renderView = () => {
+    const userName = user.displayName || user.email?.split('@')[0] || 'Member';
     switch (activeView) {
       case 'home':
-        return <Home userName={user.name} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;
+        return <Home userName={userName} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;
       case 'recipes':
         return <Recipes showToast={showToast} />;
       case 'tracker':
@@ -110,7 +117,7 @@ export default function App() {
       case 'contact':
         return <Contact showToast={showToast} />;
       default:
-        return <Home userName={user.name} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;
+        return <Home userName={userName} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;
     }
   };
 
@@ -118,7 +125,7 @@ export default function App() {
     <Layout 
       activeView={activeView} 
       onNavigate={setActiveView} 
-      userInitial={user.name[0]} 
+      userInitial={(user.displayName || user.email || 'M')[0].toUpperCase()} 
       calories={`${calCurrent} / ${calGoal} kcal`}
       onLogout={handleLogout}
     >

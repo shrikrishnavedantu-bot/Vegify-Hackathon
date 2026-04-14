@@ -1,29 +1,64 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { auth } from '../lib/firebase';
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signInWithPopup, 
+  GoogleAuthProvider,
+  updateProfile
+} from 'firebase/auth';
 
 interface LoginProps {
-  onLogin: (name: string, isGuest: boolean) => void;
   showToast: (msg: string, type?: 'info' | 'success' | 'error') => void;
 }
 
-export default function Login({ onLogin, showToast }: LoginProps) {
+export default function Login({ showToast }: LoginProps) {
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(activeTab === 'signin' ? 'Member' : name || 'Member', false);
-    showToast(activeTab === 'signin' ? 'Welcome back to Vegify!' : 'Account created! Welcome to Vegify.', 'success');
+    setLoading(true);
+    try {
+      if (activeTab === 'signin') {
+        await signInWithEmailAndPassword(auth, email, password);
+        showToast('Welcome back to Vegify!', 'success');
+      } else {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(userCredential.user, { displayName: name });
+        showToast('Account created! Welcome to Vegify.', 'success');
+      }
+    } catch (error: any) {
+      showToast(error.message || 'Authentication failed', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      showToast('Signed in with Google!', 'success');
+    } catch (error: any) {
+      showToast(error.message || 'Google sign-in failed', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGuest = () => {
-    onLogin('Guest', true);
-    showToast("You're in guest mode. Progress saved locally.", 'info');
+    // For now, we'll just show a message as guest mode is handled by App.tsx logic
+    // but with real Firebase, we might want to use anonymous auth if needed.
+    showToast("Guest mode is currently limited. Please sign in for the full experience.", 'info');
   };
 
   return (
@@ -172,8 +207,20 @@ export default function Login({ onLogin, showToast }: LoginProps) {
                   </label>
                   <a href="#" className="text-secondary font-medium hover:underline">Forgot password?</a>
                 </div>
-                <button type="submit" className="w-full purple-gradient text-white py-4 rounded-full font-bold shadow-lg hover:shadow-secondary/20 transition-all transform hover:-translate-y-1 active:scale-95">
-                  Sign In
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full purple-gradient text-white py-4 rounded-full font-bold shadow-lg hover:shadow-secondary/20 transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    activeTab === 'signin' ? 'Sign In' : 'Create Account'
+                  )}
                 </button>
                 
                 <div className="relative py-4">
@@ -181,12 +228,15 @@ export default function Login({ onLogin, showToast }: LoginProps) {
                   <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400">Or continue with</span></div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button type="button" onClick={() => showToast('Demo mode: Google login disabled')} className="flex items-center justify-center gap-2 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-5 h-5" alt="Google" referrerPolicy="no-referrer" /> Google
-                  </button>
-                  <button type="button" onClick={() => showToast('Demo mode: Apple login disabled')} className="flex items-center justify-center gap-2 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm">
-                    <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" className="w-5 h-5" alt="Apple" referrerPolicy="no-referrer" /> Apple
+                <div className="grid grid-cols-1 gap-4">
+                  <button 
+                    type="button" 
+                    onClick={handleGoogleLogin} 
+                    disabled={loading}
+                    className="flex items-center justify-center gap-2 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm disabled:opacity-50"
+                  >
+                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-5 h-5" alt="Google" referrerPolicy="no-referrer" /> 
+                    Sign in with Google
                   </button>
                 </div>
               </motion.form>
@@ -242,8 +292,20 @@ export default function Login({ onLogin, showToast }: LoginProps) {
                 <label className="flex items-center gap-2 cursor-pointer text-sm text-text-gray">
                   <input type="checkbox" required className="accent-secondary w-4 h-4 rounded" /> I agree to Terms & Conditions
                 </label>
-                <button type="submit" className="w-full purple-gradient text-white py-4 rounded-full font-bold shadow-lg hover:shadow-secondary/20 transition-all transform hover:-translate-y-1 active:scale-95">
-                  Create Account
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full purple-gradient text-white py-4 rounded-full font-bold shadow-lg hover:shadow-secondary/20 transition-all transform hover:-translate-y-1 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <motion.div 
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    'Create Account'
+                  )}
                 </button>
               </motion.form>
             )}
