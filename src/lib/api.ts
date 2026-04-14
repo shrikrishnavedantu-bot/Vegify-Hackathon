@@ -14,18 +14,20 @@ async function getAuthHeaders() {
 
 export const api = {
   async identifyDish(imageBase64: string) {
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/identify-dish`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ imageBase64 })
     });
     return response.json();
   },
 
   async generateVegan(dishName: string, animalProduct: string) {
+    const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/generate-vegan`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ dishName, animalProduct })
     });
     return response.json();

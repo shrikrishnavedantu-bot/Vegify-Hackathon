@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, RefreshCw, Flame, Leaf, Sparkles, Upload, ChefHat, Check, ArrowRight } from 'lucide-react';
+import { Camera, RefreshCw, Flame, Leaf, Sparkles, Upload, ChefHat, Check, ArrowRight, Save } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { INGREDIENTS } from '../constants';
+import { api } from '../lib/api';
 
 interface HomeProps {
   userName: string;
@@ -19,26 +20,75 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
   const [showResult, setShowResult] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [groceryResults, setGroceryResults] = useState<any[]>([]);
+  
+  const [originalImage, setOriginalImage] = useState<string>("https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80");
+  const [veganImage, setVeganImage] = useState<string>("https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80");
+  const [aiData, setAiData] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const simulateProcessing = () => {
+  const handleAIConversion = async (file?: File) => {
     setIsProcessing(true);
     setShowResult(false);
-    const steps = ["Analyzing dish...", "Detecting textures...", "Finding plant-based twin...", "Ready!"];
-    let i = 0;
     
-    const interval = setInterval(() => {
-      setProcessStep(steps[i]);
-      i++;
-      if (i >= steps.length) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsProcessing(false);
-          setShowResult(true);
-          onUpdateStats(snaps + 1, converted + 1);
-          showToast("✨ AI transformation successful!", "success");
-        }, 500);
+    try {
+      let imageBase64 = "";
+      
+      if (file) {
+        setProcessStep("Reading image...");
+        const reader = new FileReader();
+        imageBase64 = await new Promise((resolve) => {
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.readAsDataURL(file);
+        });
+        setOriginalImage(imageBase64);
+      } else {
+        // Demo mode - use the current original image
+        imageBase64 = originalImage;
       }
-    }, 800);
+
+      setProcessStep("Identifying dish...");
+      const identification = await api.identifyDish(imageBase64);
+      
+      if (identification.error) throw new Error(identification.error);
+
+      setProcessStep(`Found: ${identification.dishName}. Generating vegan twin...`);
+      const veganData = await api.generateVegan(identification.dishName, identification.animalProduct);
+      
+      if (veganData.error) throw new Error(veganData.error);
+
+      setAiData({ ...identification, ...veganData });
+      setVeganImage(veganData.veganImageUrl);
+      
+      setProcessStep("Finalizing...");
+      setTimeout(() => {
+        setIsProcessing(false);
+        setShowResult(true);
+        onUpdateStats(snaps + 1, converted + 1);
+        showToast(`✨ Successfully converted ${identification.dishName}!`, "success");
+      }, 800);
+
+    } catch (error: any) {
+      console.error(error);
+      showToast(error.message || "AI transformation failed", "error");
+      setIsProcessing(false);
+    }
+  };
+
+  const handleSaveSwap = async () => {
+    if (!aiData) return;
+    try {
+      await api.saveSwap({
+        originalDish: aiData.dishName,
+        originalImage,
+        veganImage,
+        swapText: aiData.swapText,
+        flavorPromise: aiData.flavorPromise,
+        nutritionSaved: aiData.nutritionComparison
+      });
+      showToast("Swap saved to your profile!", "success");
+    } catch (error) {
+      showToast("Failed to save swap", "error");
+    }
   };
 
   const toggleIngredient = (id: string) => {
@@ -127,10 +177,18 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
             <div className="flex flex-wrap gap-4 pt-4">
               <label className="cursor-pointer purple-gradient text-white px-8 py-4 rounded-full font-bold shadow-lg flex items-center gap-2 hover:scale-105 transition-all active:scale-95">
                 <Camera className="w-5 h-5" /> Take Photo
-                <input type="file" className="hidden" onChange={() => simulateProcessing()} />
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  className="hidden" 
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleAIConversion(file);
+                  }} 
+                />
               </label>
               <button 
-                onClick={() => simulateProcessing()} 
+                onClick={() => handleAIConversion()} 
                 className="border-2 border-secondary text-secondary px-8 py-4 rounded-full font-bold hover:bg-secondary/5 transition-all flex items-center gap-2 active:scale-95"
               >
                 <Sparkles className="w-5 h-5" /> Try Demo
@@ -171,7 +229,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
             <div className="grid grid-cols-2 gap-2 relative h-[300px] lg:h-[400px]">
               <div className="rounded-2xl overflow-hidden relative group">
                 <img 
-                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" 
+                  src={originalImage} 
                   className="w-full h-full object-cover"
                   alt="Original"
                   referrerPolicy="no-referrer"
@@ -183,7 +241,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
                 showResult ? "border-4 border-secondary" : "border-4 border-transparent"
               )}>
                 <img 
-                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" 
+                  src={veganImage} 
                   className={cn(
                     "w-full h-full object-cover transition-all duration-1000",
                     !showResult && "grayscale brightness-50"
@@ -193,14 +251,25 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
                 />
                 <div className="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-lg">Vegify Twin</div>
                 
-                {showResult && (
+                {showResult && aiData && (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute bottom-4 left-4 right-4 glass p-3 rounded-xl text-[10px] space-y-1 shadow-2xl"
                   >
-                    <p className="font-bold text-secondary">✨ Swap: Firm Tofu</p>
-                    <p className="text-text-gray">"Same creamy gravy. Same spices."</p>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold text-secondary">✨ Swap: {aiData.swapText.split('.')[0]}</p>
+                        <p className="text-text-gray line-clamp-2">"{aiData.flavorPromise}"</p>
+                      </div>
+                      <button 
+                        onClick={handleSaveSwap}
+                        className="p-2 bg-secondary text-white rounded-lg hover:scale-105 transition-all"
+                        title="Save Swap"
+                      >
+                        <Save size={14} />
+                      </button>
+                    </div>
                   </motion.div>
                 )}
               </div>

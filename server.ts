@@ -48,7 +48,7 @@ async function startServer() {
   };
 
   // AI Routes
-  app.post("/api/identify-dish", async (req, res) => {
+  app.post("/api/identify-dish", verifyToken, async (req, res) => {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ error: "Image required" });
 
@@ -76,7 +76,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/generate-vegan", async (req, res) => {
+  app.post("/api/generate-vegan", verifyToken, async (req, res) => {
     const { dishName, animalProduct } = req.body;
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

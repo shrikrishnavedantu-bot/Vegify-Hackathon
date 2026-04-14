@@ -20,11 +20,18 @@ export default function Login({ showToast }: LoginProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (activeTab === 'signup' && password !== confirmPassword) {
+      showToast('Passwords do not match', 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       if (activeTab === 'signin') {
@@ -265,6 +272,8 @@ export default function Login({ showToast }: LoginProps) {
                   <input 
                     type="email" 
                     required 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com" 
                     className="w-full p-4 rounded-xl border border-gray-200 focus:border-secondary focus:ring-2 focus:ring-secondary/10 outline-none transition-all"
                   />
@@ -275,6 +284,8 @@ export default function Login({ showToast }: LoginProps) {
                     <input 
                       type="password" 
                       required 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••" 
                       className="w-full p-4 rounded-xl border border-gray-200 focus:border-secondary focus:ring-2 focus:ring-secondary/10 outline-none transition-all"
                     />
@@ -284,6 +295,8 @@ export default function Login({ showToast }: LoginProps) {
                     <input 
                       type="password" 
                       required 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••" 
                       className="w-full p-4 rounded-xl border border-gray-200 focus:border-secondary focus:ring-2 focus:ring-secondary/10 outline-none transition-all"
                     />
