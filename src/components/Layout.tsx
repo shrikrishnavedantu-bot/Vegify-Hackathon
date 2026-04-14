@@ -57,7 +57,7 @@ export default function Layout({ children, activeView, onNavigate, userInitial, 
             </div>
             <div 
               className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center text-white font-bold cursor-pointer shadow-md hover:scale-105 transition-transform"
-              onClick={() => onNavigate('contact')}
+              onClick={() => onNavigate('profile')}
             >
               <span>{userInitial}</span>
             </div>

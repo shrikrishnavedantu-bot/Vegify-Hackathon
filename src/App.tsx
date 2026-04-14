@@ -8,6 +8,7 @@ import Tracker from './components/Tracker';
 import Community from './components/Community';
 import Blog from './components/Blog';
 import Contact from './components/Contact';
+import Profile from './components/Profile';
 import Toast, { ToastType } from './components/Toast';
 import { Meal } from './types';
 import { useAuth } from './lib/FirebaseProvider';
@@ -116,6 +117,8 @@ export default function App() {
         return <Blog showToast={showToast} />;
       case 'contact':
         return <Contact showToast={showToast} />;
+      case 'profile':
+        return <Profile snaps={snaps} converted={converted} showToast={showToast} onLogout={handleLogout} />;
       default:
         return <Home userName={userName} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;
     }
