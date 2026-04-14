@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -11,12 +10,34 @@ import fs from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initialize Firebase Admin
-const firebaseConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "firebase-applet-config.json"), "utf8"));
+const app = express();
+const PORT = 3000;
 
-admin.initializeApp({
-  projectId: firebaseConfig.projectId,
-});
+// Initialize Firebase Admin
+let firebaseConfig;
+try {
+  const configPath = path.join(__dirname, "firebase-applet-config.json");
+  if (fs.existsSync(configPath)) {
+    firebaseConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } else {
+    firebaseConfig = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    };
+  }
+} catch (error) {
+  console.error("Firebase config error:", error);
+}
+
+if (firebaseConfig && (firebaseConfig.projectId || firebaseConfig.clientEmail)) {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: firebaseConfig.privateKey ? admin.credential.cert(firebaseConfig) : admin.credential.applicationDefault(),
+      projectId: firebaseConfig.projectId,
+    });
+  }
+}
 
 const db = admin.firestore();
 const auth = admin.auth();
@@ -24,31 +45,32 @@ const auth = admin.auth();
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(cookieParser());
 
-  app.use(cors());
-  app.use(express.json({ limit: '50mb' }));
-  app.use(cookieParser());
+// Middleware to verify Firebase Auth Token
+const verifyToken = async (req: any, res: any, next: any) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  try {
+    const decodedToken = await auth.verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+};
 
-  // Middleware to verify Firebase Auth Token
-  const verifyToken = async (req: any, res: any, next: any) => {
-    const idToken = req.headers.authorization?.split("Bearer ")[1];
-    if (!idToken) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    try {
-      const decodedToken = await auth.verifyIdToken(idToken);
-      req.user = decodedToken;
-      next();
-    } catch (error) {
-      res.status(401).json({ error: "Invalid token" });
-    }
-  };
+// Health Check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", env: process.env.NODE_ENV, vercel: !!process.env.VERCEL });
+});
 
-  // AI Routes
-  app.post("/api/identify-dish", verifyToken, async (req, res) => {
+// AI Routes
+app.post("/api/identify-dish", verifyToken, async (req, res) => {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ error: "Image required" });
 
@@ -213,8 +235,10 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+// Vite middleware for development
+async function setupVite() {
+  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -222,15 +246,28 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+      });
+    }
   }
-
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  setupVite().then(() => {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  });
+} else {
+  // For Vercel, we don't need to call listen, just export the app
+  // But we might still want to serve static files if Vercel routes don't handle it
+  const distPath = path.join(process.cwd(), 'dist');
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+  }
+}
+
+export default app;
