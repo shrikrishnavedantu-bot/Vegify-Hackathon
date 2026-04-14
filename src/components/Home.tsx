@@ -171,7 +171,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
             <div className="grid grid-cols-2 gap-2 relative h-[300px] lg:h-[400px]">
               <div className="rounded-2xl overflow-hidden relative group">
                 <img 
-                  src="https://images.unsplash.com/photo-1603894527026-11b250e45312?auto=format&fit=crop&w=600&q=80" 
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" 
                   className="w-full h-full object-cover"
                   alt="Original"
                   referrerPolicy="no-referrer"
@@ -183,7 +183,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
                 showResult ? "border-4 border-secondary" : "border-4 border-transparent"
               )}>
                 <img 
-                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" 
+                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" 
                   className={cn(
                     "w-full h-full object-cover transition-all duration-1000",
                     !showResult && "grayscale brightness-50"
