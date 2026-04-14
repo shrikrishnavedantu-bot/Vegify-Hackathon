@@ -1,0 +1,6 @@
+{
+  "name": "Vegify",
+  "description": "A premium plant-based transformation platform featuring AI-powered dish conversion, mimic recipes, and a smart grocery converter.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
