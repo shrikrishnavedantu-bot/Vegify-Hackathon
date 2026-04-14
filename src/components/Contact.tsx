@@ -21,10 +21,18 @@ export default function Contact({ showToast }: ContactProps) {
 
   return (
     <div className="max-w-5xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="text-center space-y-4">
-        <h2 className="text-4xl font-extrabold font-display">👋 Contact the Founder</h2>
-        <p className="text-text-gray max-w-2xl mx-auto">Have feedback, a feature request, or just want to share your transformation story? I'm all ears.</p>
-      </div>
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 bg-secondary/10 rounded-full mx-auto flex items-center justify-center mb-4 overflow-hidden border-2 border-secondary/20">
+            <img 
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" 
+              className="w-full h-full object-cover" 
+              alt="Founder" 
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          <h2 className="text-4xl font-extrabold font-display">👋 Contact the Founder</h2>
+          <p className="text-text-gray max-w-2xl mx-auto">Have feedback, a feature request, or just want to share your transformation story? I'm all ears.</p>
+        </div>
 
       <div className="grid lg:grid-cols-2 gap-12">
         {/* Contact Info */}

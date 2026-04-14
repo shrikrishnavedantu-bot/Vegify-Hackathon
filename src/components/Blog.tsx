@@ -23,6 +23,7 @@ export default function Blog({ showToast }: BlogProps) {
               src={BLOG_POSTS[0].image} 
               className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000" 
               alt="Featured"
+              referrerPolicy="no-referrer"
             />
           </div>
           <div className="lg:w-1/2 p-8 lg:p-12 space-y-6 flex flex-col justify-center">
@@ -62,6 +63,7 @@ export default function Blog({ showToast }: BlogProps) {
                 src={post.image} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                 alt={post.title}
+                referrerPolicy="no-referrer"
               />
               <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-secondary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm">
                 {post.category}

@@ -186,7 +186,19 @@ export default function Tracker({
 
         {/* Progress Tracker */}
         <div className="glass p-8 rounded-[2rem] shadow-lg flex flex-col items-center justify-center space-y-8 border border-secondary/5">
-          <h2 className="text-2xl font-bold font-display">📊 Today's Progress</h2>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl overflow-hidden border border-secondary/10">
+              <img 
+                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=150&q=80" 
+                className="w-full h-full object-cover" 
+                alt="Healthy Bowl" 
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold font-display">📊 Today's Progress</h2>
+            </div>
+          </div>
           
           <div className="relative flex items-center justify-center">
             <svg className="w-64 h-64 transform -rotate-90">

@@ -40,16 +40,35 @@ export default function Login({ onLogin, showToast }: LoginProps) {
             <motion.div
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
             >
               <img 
                 src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" 
-                className="w-64 h-64 object-cover rounded-full border-8 border-white/20 shadow-2xl mx-auto" 
+                className="w-64 h-64 object-cover rounded-full border-8 border-white/20 shadow-2xl mx-auto relative z-10" 
                 alt="Food" 
+                referrerPolicy="no-referrer"
+              />
+              {/* Floating smaller images */}
+              <motion.img 
+                animate={{ y: [0, 15, 0], x: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=150&q=80"
+                className="absolute -top-4 -left-4 w-20 h-20 object-cover rounded-2xl border-4 border-white/30 shadow-xl z-20"
+                alt="Veggie"
+                referrerPolicy="no-referrer"
+              />
+              <motion.img 
+                animate={{ y: [0, -15, 0], x: [0, -10, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=150&q=80"
+                className="absolute -bottom-4 -right-4 w-24 h-24 object-cover rounded-2xl border-4 border-white/30 shadow-xl z-20"
+                alt="Salad"
+                referrerPolicy="no-referrer"
               />
             </motion.div>
           </div>
           <h1 className="text-5xl font-bold mb-4 font-display">Transform your plate.</h1>
-          <p className="text-xl opacity-90">Transform your life with AI-powered plant-based swaps.</p>
+          <p className="text-xl opacity-90">Love non-veg flavors? Get them all — the veg way.</p>
           
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -164,10 +183,10 @@ export default function Login({ onLogin, showToast }: LoginProps) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <button type="button" onClick={() => showToast('Demo mode: Google login disabled')} className="flex items-center justify-center gap-2 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-5 h-5" alt="Google" /> Google
+                    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" className="w-5 h-5" alt="Google" referrerPolicy="no-referrer" /> Google
                   </button>
                   <button type="button" onClick={() => showToast('Demo mode: Apple login disabled')} className="flex items-center justify-center gap-2 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all font-medium text-sm">
-                    <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" className="w-5 h-5" alt="Apple" /> Apple
+                    <img src="https://cdn-icons-png.flaticon.com/512/0/747.png" className="w-5 h-5" alt="Apple" referrerPolicy="no-referrer" /> Apple
                   </button>
                 </div>
               </motion.form>

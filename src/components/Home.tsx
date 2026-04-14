@@ -73,10 +73,20 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-3xl font-bold font-display">Good {getTimeGreeting()}, {userName}!</h2>
-          <p className="text-text-gray">"Every plant-based meal makes a difference to your health and the planet."</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-secondary/10 shadow-sm">
+            <img 
+              src="https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&w=150&q=80" 
+              className="w-full h-full object-cover" 
+              alt="Healthy Food" 
+              referrerPolicy="no-referrer"
+            />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold font-display">Good {getTimeGreeting()}, {userName}!</h2>
+            <p className="text-text-gray">"Every plant-based meal makes a difference to your health and the planet."</p>
+          </div>
         </div>
       </div>
 
@@ -111,7 +121,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
               <span className="purple-text-gradient">Convert to Plant-Based.</span>
             </h2>
             <p className="text-text-gray text-lg">
-              Our AI analyzes your non-veg plate and instantly generates a plant-based twin with the same texture, flavor, and soul.
+              Love non-veg flavors? Get them all — the veg way. Our AI analyzes your plate and instantly generates a plant-based twin with the same texture and soul.
             </p>
             
             <div className="flex flex-wrap gap-4 pt-4">
@@ -164,6 +174,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
                   src="https://images.unsplash.com/photo-1603894527026-11b250e45312?auto=format&fit=crop&w=600&q=80" 
                   className="w-full h-full object-cover"
                   alt="Original"
+                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase backdrop-blur-sm">Original</div>
               </div>
@@ -178,6 +189,7 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
                     !showResult && "grayscale brightness-50"
                   )}
                   alt="Converted"
+                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute top-4 left-4 bg-secondary text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-lg">Vegify Twin</div>
                 
@@ -245,13 +257,23 @@ export default function Home({ userName, snaps, converted, onUpdateStats, showTo
             </button>
           </div>
 
-          <div className="lg:col-span-2 glass p-6 rounded-3xl min-h-[300px] flex flex-col">
+          <div className="lg:col-span-2 glass p-6 rounded-3xl min-h-[300px] flex flex-col relative overflow-hidden">
             {groceryResults.length === 0 ? (
-              <div className="flex flex-col items-center justify-center flex-grow text-gray-400 py-10">
-                <ChefHat className="w-16 h-16 mb-4 opacity-10" />
-                <p className="font-medium">Select ingredients to see what you can mimic!</p>
-                <p className="text-xs mt-2">Try adding tofu or mushrooms – they're the most versatile!</p>
-              </div>
+              <>
+                <div className="absolute inset-0 opacity-5">
+                  <img 
+                    src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1000&q=80" 
+                    className="w-full h-full object-cover" 
+                    alt="Background" 
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="flex flex-col items-center justify-center flex-grow text-gray-400 py-10 relative z-10">
+                  <ChefHat className="w-16 h-16 mb-4 opacity-10" />
+                  <p className="font-medium">Select ingredients to see what you can mimic!</p>
+                  <p className="text-xs mt-2">Try adding tofu or mushrooms – they're the most versatile!</p>
+                </div>
+              </>
             ) : (
               <div className="grid md:grid-cols-2 gap-4">
                 {groceryResults.map(res => (

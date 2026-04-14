@@ -34,8 +34,8 @@ export default function Recipes({ showToast }: RecipesProps) {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="text-center space-y-2">
-        <h2 className="text-4xl font-extrabold font-display">🍽️ 30+ Mimic Recipes</h2>
-        <p className="text-text-gray max-w-2xl mx-auto">Plant-based dishes that taste like the real thing. Curated by top chefs to help your transformation.</p>
+        <h2 className="text-4xl font-extrabold font-display">Love non-veg flavors? Get them all — the veg way.</h2>
+        <p className="text-text-gray max-w-2xl mx-auto">🍽️ 30+ Mimic Recipes curated by top chefs to help your transformation.</p>
       </div>
 
       {/* Search & Filter */}
@@ -82,6 +82,7 @@ export default function Recipes({ showToast }: RecipesProps) {
                 src={recipe.image} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                 alt={recipe.title}
+                referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
                 <button className="bg-white text-secondary px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2">
@@ -151,7 +152,7 @@ export default function Recipes({ showToast }: RecipesProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative h-64 md:h-96 bg-gray-100 flex items-center justify-center">
-                <img src={selectedRecipe.image} className="w-full h-full object-cover opacity-50" alt="" />
+                <img src={selectedRecipe.image} className="w-full h-full object-cover opacity-50" alt="" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform">
                     <Play className="w-8 h-8 text-secondary fill-current ml-1" />

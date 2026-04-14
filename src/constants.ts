@@ -59,7 +59,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '40 min',
     calories: 290,
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b547b4de5?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -71,7 +71,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '20 min',
     calories: 250,
-    image: 'https://images.unsplash.com/photo-1569058242253-92a9c71f9867?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -83,7 +83,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '25 min',
     calories: 210,
-    image: 'https://images.unsplash.com/photo-1615485245453-9f23d580a55b?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1594971475674-6a97f8fe8c2b?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -95,7 +95,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '30 min',
     calories: 180,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1541014741259-df529411b96a?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
 
@@ -145,7 +145,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '40 min',
     calories: 190,
-    image: 'https://images.unsplash.com/photo-1596797038530-2c39fa81b487?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -195,7 +195,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '15 min',
     calories: 210,
-    image: 'https://images.unsplash.com/photo-1510629954389-c1e0da47d4ec?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -207,7 +207,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '10 min',
     calories: 160,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -231,7 +231,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '10 min',
     calories: 190,
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -257,7 +257,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '25 min',
     calories: 520,
-    image: 'https://images.unsplash.com/photo-1645112481338-3564998782f0?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -293,7 +293,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '5 min',
     calories: 40,
-    image: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -319,7 +319,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '30 min',
     calories: 260,
-    image: 'https://images.unsplash.com/photo-1589113103503-496a7d6bc631?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -357,7 +357,7 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Easy',
     time: '10 min',
     calories: 240,
-    image: 'https://images.unsplash.com/photo-1528740096961-3aef268ce072?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   },
   {
@@ -369,7 +369,31 @@ export const RECIPES: Recipe[] = [
     difficulty: 'Medium',
     time: '4 hours',
     calories: 310,
-    image: 'https://images.unsplash.com/photo-1501443762994-82bd5dabb892?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=800&q=80',
+    isVideo: true
+  },
+  {
+    id: '31',
+    title: 'Soy Granules Bolognese',
+    category: 'Meat Mimics',
+    mimics: 'Beef bolognese',
+    swap: 'Soy granules instead of minced beef',
+    difficulty: 'Easy',
+    time: '25 min',
+    calories: 340,
+    image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=80',
+    isVideo: true
+  },
+  {
+    id: '32',
+    title: 'Cashew Mozzarella Sticks',
+    category: 'Cheese Mimics',
+    mimics: 'Mozzarella sticks',
+    swap: 'Cashew cheese instead of mozzarella',
+    difficulty: 'Medium',
+    time: '30 min',
+    calories: 280,
+    image: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=800&q=80',
     isVideo: true
   }
 ];

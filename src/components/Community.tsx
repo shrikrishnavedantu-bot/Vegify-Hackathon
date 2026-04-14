@@ -40,13 +40,15 @@ export default function Community({ showToast }: CommunityProps) {
         <div className="glass p-6 rounded-3xl space-y-4">
           <h3 className="font-bold text-lg font-display">Top Contributors</h3>
           <div className="space-y-4">
-            {[1, 2, 3].map(i => (
+            {[
+              { name: 'Ramesh K.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80' },
+              { name: 'Priya S.', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80' },
+              { name: 'Ankit M.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80' }
+            ].map((contributor, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center text-white text-xs font-bold">
-                  {i === 1 ? 'RK' : i === 2 ? 'PS' : 'AM'}
-                </div>
+                <img src={contributor.avatar} className="w-10 h-10 rounded-full object-cover border border-secondary/10" alt={contributor.name} referrerPolicy="no-referrer" />
                 <div>
-                  <p className="text-sm font-bold">User {i}</p>
+                  <p className="text-sm font-bold">{contributor.name}</p>
                   <p className="text-[10px] text-secondary font-bold uppercase tracking-widest flex items-center gap-1">
                     <Award className="w-3 h-3" /> Plant Pro
                   </p>
@@ -62,7 +64,12 @@ export default function Community({ showToast }: CommunityProps) {
         {/* Create Post */}
         <div className="glass p-6 rounded-3xl shadow-sm border border-secondary/5">
           <div className="flex gap-4">
-            <div className="w-12 h-12 rounded-full purple-gradient flex-shrink-0" />
+            <img 
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" 
+              className="w-12 h-12 rounded-full object-cover border-2 border-secondary/10 flex-shrink-0" 
+              alt="User" 
+              referrerPolicy="no-referrer"
+            />
             <div className="flex-grow space-y-4">
               <textarea 
                 placeholder="Share your transformation or ask a question..." 
@@ -111,7 +118,7 @@ export default function Community({ showToast }: CommunityProps) {
             >
               <div className="flex justify-between items-start">
                 <div className="flex gap-3">
-                  <img src={post.avatar} className="w-12 h-12 rounded-full bg-secondary/10" alt={post.user} />
+                  <img src={post.avatar} className="w-12 h-12 rounded-full bg-secondary/10" alt={post.user} referrerPolicy="no-referrer" />
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="font-bold">{post.user}</p>
@@ -129,7 +136,7 @@ export default function Community({ showToast }: CommunityProps) {
                 <p className="text-sm text-text-dark leading-relaxed">{post.content}</p>
                 {post.image && (
                   <div className="rounded-2xl overflow-hidden h-64">
-                    <img src={post.image} className="w-full h-full object-cover" alt="Post content" />
+                    <img src={post.image} className="w-full h-full object-cover" alt="Post content" referrerPolicy="no-referrer" />
                   </div>
                 )}
               </div>
