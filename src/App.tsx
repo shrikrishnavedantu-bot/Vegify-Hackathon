@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Login from './components/Login';
 import Layout from './components/Layout';
 import Home from './components/Home';
 import Recipes from './components/Recipes';
@@ -11,12 +10,14 @@ import Contact from './components/Contact';
 import Profile from './components/Profile';
 import Toast, { ToastType } from './components/Toast';
 import { Meal } from './types';
-import { useAuth } from './lib/FirebaseProvider';
-import { auth } from './lib/firebase';
-import { signOut } from 'firebase/auth';
 
 export default function App() {
-  const { user, loading: authLoading } = useAuth();
+  // Guest User State
+  const [user] = useState({
+    displayName: 'Guest User',
+    email: 'guest@vegify.app',
+    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Guest'
+  });
 
   // Navigation State
   const [activeView, setActiveView] = useState('home');
@@ -53,15 +54,10 @@ export default function App() {
     setToast({ msg, type });
   };
 
-  const handleLogout = async () => {
-    if (confirm("Are you sure you want to logout?")) {
-      try {
-        await signOut(auth);
-        setActiveView('home');
-        showToast("Logged out successfully.");
-      } catch (error) {
-        showToast("Logout failed", "error");
-      }
+  const handleLogout = () => {
+    if (confirm("Clear local data and reset?")) {
+      localStorage.clear();
+      window.location.reload();
     }
   };
 
@@ -79,31 +75,8 @@ export default function App() {
 
   const calCurrent = meals.reduce((acc, m) => acc + m.calories, 0);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center purple-gradient">
-        <motion.div 
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-white border-t-transparent rounded-full"
-        />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <>
-        <Login showToast={showToast} />
-        <AnimatePresence>
-          {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
-        </AnimatePresence>
-      </>
-    );
-  }
-
   const renderView = () => {
-    const userName = user.displayName || user.email?.split('@')[0] || 'Member';
+    const userName = user.displayName;
     switch (activeView) {
       case 'home':
         return <Home userName={userName} snaps={snaps} converted={converted} onUpdateStats={(s, c) => { setSnaps(s); setConverted(c); }} showToast={showToast} onNavigate={setActiveView} />;

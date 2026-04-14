@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { User, Mail, Calendar, Shield, Award, Settings, LogOut, Camera, RefreshCw, Flame, Leaf } from 'lucide-react';
-import { useAuth } from '../lib/FirebaseProvider';
-import { api } from '../lib/api';
 import { cn } from '../lib/utils';
 
 interface ProfileProps {
@@ -13,26 +11,12 @@ interface ProfileProps {
 }
 
 export default function Profile({ snaps, converted, showToast, onLogout }: ProfileProps) {
-  const { user } = useAuth();
-  const [profileData, setProfileData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await api.getProfile();
-        setProfileData(data);
-      } catch (error) {
-        console.error("Failed to fetch profile data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
+  const user = {
+    displayName: 'Guest User',
+    email: 'guest@vegify.app',
+    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Guest',
+    metadata: { creationTime: new Date().toISOString() }
+  };
 
   const stats = [
     { label: 'Total Snaps', value: snaps, icon: Camera, color: 'text-purple-600', bg: 'bg-purple-50' },
@@ -123,7 +107,7 @@ export default function Profile({ snaps, converted, showToast, onLogout }: Profi
             <div className="flex justify-between items-center p-4 rounded-2xl bg-white border border-gray-50">
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Auth Provider</p>
-                <p className="font-medium">{user?.providerData[0]?.providerId === 'google.com' ? 'Google Account' : 'Email & Password'}</p>
+                <p className="font-medium">Guest Session</p>
               </div>
               <div className="px-3 py-1 bg-green-50 text-green-600 text-[10px] font-bold rounded-full uppercase">Verified</div>
             </div>
